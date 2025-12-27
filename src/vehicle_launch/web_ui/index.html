@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberBot Control</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>CyberBot Dashboard</h1>
+            <div id="connection-status" class="status disconnected">Disconnected</div>
+        </header>
+
+        <div class="content-grid">
+            <!-- Control Section -->
+            <section class="card control-card">
+                <div class="card-header">
+                    <h2>Manual Control</h2>
+                </div>
+                <div class="card-body">
+                    <div class="joystick-wrapper">
+                        <div id="joystick-base">
+                            <div id="joystick-knob"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="live-stats">
+                        <div class="stat">
+                            <span class="stat-label">Linear</span>
+                            <span class="stat-value" id="cmd-linear">0.00</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Angular</span>
+                            <span class="stat-value" id="cmd-angular">0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="slider-row">
+                            <label>Max Linear: <span id="disp-max-lin">0.5</span> m/s</label>
+                            <input type="range" id="slider-max-lin" min="0.1" max="2.0" step="0.1" value="0.5">
+                        </div>
+                        <div class="slider-row">
+                            <label>Max Angular: <span id="disp-max-ang">1.0</span> rad/s</label>
+                            <input type="range" id="slider-max-ang" min="0.1" max="3.0" step="0.1" value="1.0">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Section -->
+            <section class="card data-card">
+                <div class="card-header">
+                    <h2>Telemetry & Status</h2>
+                </div>
+                <div class="card-body">
+                    <div class="telemetry-box">
+                        <h3>STM32 Feedback</h3>
+                        <div class="telemetry-row">
+                            <div class="t-item">
+                                <span class="t-label">Data X</span>
+                                <span class="t-value" id="stm32-x">0.000</span>
+                            </div>
+                            <div class="t-item">
+                                <span class="t-label">Data Y</span>
+                                <span class="t-value" id="stm32-y">0.000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div class="file-upload-box">
+                        <h3>Cloud Upload (PCD)</h3>
+                        <div class="file-controls">
+                            <button id="btn-refresh-files" class="action-btn">Refresh List</button>
+                            <button id="btn-upload-file" class="action-btn primary" disabled>Upload Selected</button>
+                        </div>
+                        <div id="file-list-container" class="file-list">
+                            <div class="empty-state">Click Refresh to load files</div>
+                        </div>
+                    </div>
+
+                    <div class="log-box-wrapper">
+                        <h3>System Log</h3>
+                        <div id="system-log" class="log-box">
+                            <!-- Logs will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<launch>
+    <!-- Argument to enable/disable modules -->
+    <arg name="enable_lidar" default="false" />
+    <arg name="enable_stm32" default="true" />
+    <arg name="enable_mapping" default="false" /> <!-- Default false, enable if you want to run FAST_LIO immediately -->
+    <arg name="enable_web" default="true" />
+    <arg name="enable_uploader" default="true" />
+
+    <!-- 0. Web Bridge (rosbridge) -->
+    <group if="$(arg enable_web)">
+        <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+            <arg name="port" value="9090"/>
+        </include>
+        
+        <!-- Simple HTTP Server for Web UI -->
+        <node pkg="vehicle_launch" type="web_server.py" name="web_ui_server" output="screen" />
+    </group>
+
+    <!-- 1. STM32 Communication Node -->
+    <group if="$(arg enable_stm32)">
+        <node pkg="stm32_comm" type="stm32_node.py" name="stm32_node" output="screen">
+            <!-- You can set parameters here if needed -->
+            <!-- <param name="port" value="/dev/ttyACM0"/> -->
+            <!-- <param name="baudrate" value="115200"/> -->
+        </node>
+    </group>
+
+    <!-- 2. Livox LiDAR Driver (MID360) -->
+    <group if="$(arg enable_lidar)">
+        <!-- Using the standard launch file from livox_ros_driver2 -->
+        <include file="$(find livox_ros_driver2)/launch_ROS1/msg_MID360.launch">
+            <arg name="rviz_enable" value="false"/> <!-- Disable driver's RViz, we might use FAST_LIO's or a global one -->
+            <arg name="publish_freq" value="10.0"/>
+        </include>
+    </group>
+
+    <!-- 3. FAST_LIO Mapping (Optional) -->
+    <group if="$(arg enable_mapping)">
+        <include file="$(find fast_lio)/launch/mapping_mid360.launch">
+            <arg name="rviz" value="true"/>
+        </include>
+    </group>
+
+    <!-- 4. Cloud Uploader Node -->
+    <group if="$(arg enable_uploader)">
+        <node pkg="cloud_uploader" type="uploader_node.py" name="cloud_uploader_node" output="screen">
+            <param name="local_folder" value="/home/hu/CyberBot/PCD"/>
+        </node>
+    </group>
+
+</launch>
