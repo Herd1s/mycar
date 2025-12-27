@@ -1,0 +1,13 @@
+<launch>
+    <arg name="hostname" default="47.100.206.61" />
+    <arg name="username" default="root" />
+    <arg name="password" default="Hj20040911!" />
+    <arg name="local_folder" default="$(env HOME)/CyberBot/PCD" />
+
+    <node pkg="cloud_uploader" type="uploader_node.py" name="cloud_uploader_node" output="screen">
+        <param name="hostname" value="$(arg hostname)" />
+        <param name="username" value="$(arg username)" />
+        <param name="password" value="$(arg password)" />
+        <param name="local_folder" value="$(arg local_folder)" />
+    </node>
+</launch>
