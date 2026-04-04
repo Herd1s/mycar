@@ -1,0 +1,71 @@
+项目代码结构与功能分析报告
+
+一、 代码组成结构
+本项目是一个基于ROS的移动机器人系统，主要由以下核心模块组成：
+1. 感知与SLAM (FAST_LIO, livox_ros_driver2):
+   - livox_ros_driver2: 负责驱动Mid360激光雷达，发布原始点云数据。
+   - FAST_LIO: 接收激光雷达和IMU数据，进行紧耦合的里程计和建图，输出高频位姿和点云地图。
+2. 规划与探索 (tare_planner):
+   - 实现了TARE算法，用于未知环境下的自主探索路径规划。
+3. 硬件接口 (stm32_comm):
+   - 负责ROS上位机与STM32底盘下位机之间的串口通信。
+4. 系统启动与Web交互 (vehicle_launch, cloud_uploader):
+   - vehicle_launch: 包含系统总启动文件及Web服务器脚本。
+   - cloud_uploader: 负责将生成的PCD地图文件上传到云端服务器。
+
+二、 与下位机的通信
+模块路径: stm32_comm/scripts/stm32_node.py, stm32_comm/scripts/host_protocol.py
+通信机制:
+1. 物理层: USB转串口连接。
+2. 协议层: 自定义ASCII字符串协议。
+   - 下行指令 (Host -> STM32): 格式为 "(v, w, f1, f2, f3, f4)\n"。
+     - v: 线速度 (Linear Velocity)
+     - w: 角速度 (Angular Velocity)
+     - f1-f4: 预留标志位
+   - 上行反馈 (STM32 -> Host): 格式为 "(x, y)"。
+     - STM32反馈当前的坐标状态。
+3. ROS层关联:
+   - 订阅 /cmd_vel (Twist消息) -> 解析为 v, w -> 封装串口协议发送。
+   - 读取串口数据 -> 解析 (x, y) -> 发布到 /stm32_feedback (Point消息)。
+
+三、 自主探索原理 (TARE Planner)
+模块路径: tare_planner
+原理简述:
+TARE (Travelling Salesman Based Autonomous Exploration) 是一种分层探索算法：
+1. 局部规划 (Local Planner): 在局部范围内寻找覆盖视场最大化的路径。
+2. 全局规划 (Global Planner): 维护未探索区域，利用TSP（旅行商问题）思想规划串联所有未探索区域的最短全局路径。
+数据流:
+- 输入: FAST_LIO 输出的位姿 (Odometry) 和 点云 (Cloud)。
+- 输出: 探索路径点 (Waypoints)，供底层控制器跟随。
+
+四、 SLAM (FAST_LIO)
+模块路径: FAST_LIO
+原理简述:
+针对Livox雷达优化的LIO（激光雷达惯性里程计）算法。
+- 利用误差状态卡尔曼滤波器 (ES-EKF) 融合IMU高频积分与激光雷达点云面元特征。
+- 特点: 计算效率高，鲁棒性强。
+关联:
+- 输入: /livox/lidar (点云) + /livox/imu (IMU数据)。
+- 输出: /Odometry (位姿) + /Cloud_registered (全局地图)。
+
+五、 网页端代码 (Web UI)
+模块路径: vehicle_launch/web_ui, vehicle_launch/scripts/web_server.py
+功能简述:
+提供可视化人机交互界面，无需安装ROS环境即可控制。
+技术栈: HTML5, CSS3, JavaScript (roslib.js), rosbridge_server (WebSocket Port 9090)。
+功能点:
+1. 手动控制 (Joystick):
+   - Web端监听摇杆 -> roslib发布 /cmd_vel -> stm32_node -> STM32。
+2. 数据遥测:
+   - Web端订阅 /stm32_feedback -> 实时显示STM32反馈数据。
+3. 云端上传:
+   - 刷新列表: 调用 /get_pcd_files 服务。
+   - 上传文件: 调用 /upload_pcd_file 服务 -> cloud_uploader节点通过SCP上传地图。
+
+六、 模块关联总结
+1. 用户通过 Web UI 发送控制指令。
+2. 指令经 rosbridge 转发至 ROS 的 /cmd_vel。
+3. stm32_node 接收 /cmd_vel 并转换为串口指令发送给 STM32 底盘执行运动。
+4. 激光雷达 (livox_ros_driver2) 数据传输给 FAST_LIO 进行建图和定位。
+5. TARE Planner 利用 FAST_LIO 的定位和地图数据规划自主探索路径。
+6. 建图完成后，cloud_uploader 可将地图文件上传至云端服务器。
