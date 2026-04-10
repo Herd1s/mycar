@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>论文智排助手 - 学位论文研究与规范编排平台</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="logo">论文智排助手</div>
+        <nav>
+          <a href="#features">核心功能</a>
+          <a href="#flow">使用流程</a>
+          <a href="#compliance">合规保障</a>
+          <a href="#demo">在线体验</a>
+        </nav>
+        <button class="btn ghost">登录</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="badge">GB/T 7713.1—2025 规范底座</span>
+          <h1>学位论文研究与规范编排助手</h1>
+          <p>
+            模仿专业论文服务站点交互体验，覆盖资料整理、框架规划、章节草拟、图表公式规范、引用校验和 Word/PDF 导出。
+            所有关键结论需来源可追溯，最终内容必须由作者确认。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#demo">立即免费体验</a>
+            <a class="btn light" href="#compliance">查看规范说明</a>
+          </div>
+          <ul class="hero-tags">
+            <li>多模型 API 切换</li>
+            <li>成本预算可控</li>
+            <li>证据链可复核</li>
+          </ul>
+        </div>
+        <div class="hero-card">
+          <h3>生成预览</h3>
+          <p>题目：多模态文献驱动的学位论文辅助写作系统</p>
+          <div class="mini-block">第1章 绪论（草稿）<span>[需来源]</span></div>
+          <div class="mini-block">图1-1 系统架构图</div>
+          <div class="mini-block">表2-1 数据集统计</div>
+          <div class="mini-block">公式(3-2)：损失函数定义</div>
+          <p class="note">⚠️ 自动内容仅作草案，请作者逐条核验后定稿。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2>核心能力</h2>
+        <div class="cards">
+          <article>
+            <h3>论文框架规划</h3>
+            <p>根据题目与资料自动生成“问题定义-原理分析-方法-实验-结论”结构。</p>
+          </article>
+          <article>
+            <h3>章节草拟</h3>
+            <p>基于资料摘要草拟章节，并标注关键结论来源占位。</p>
+          </article>
+          <article>
+            <h3>图表公式规范化</h3>
+            <p>自动生成图/表题注与按章公式编号，减少格式返工。</p>
+          </article>
+          <article>
+            <h3>引用校验</h3>
+            <p>检查参考文献来源、年份与可追溯性，形成核验报告。</p>
+          </article>
+          <article>
+            <h3>多模型与成本控制</h3>
+            <p>根据预算切换模型，记录 token 消耗，避免成本失控。</p>
+          </article>
+          <article>
+            <h3>Word / PDF 导出</h3>
+            <p>一键输出可编辑文档，支持后续模板化排版。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow" class="section alt">
+      <div class="container">
+        <h2>4 步完成论文规范编排</h2>
+        <ol class="timeline">
+          <li><strong>01 上传资料</strong><span>文献摘要、实验数据、学校模板要求。</span></li>
+          <li><strong>02 生成框架</strong><span>自动输出章节树与每章写作目标。</span></li>
+          <li><strong>03 草拟与校验</strong><span>章节草稿、图表公式建议、引用核验同步完成。</span></li>
+          <li><strong>04 导出定稿</strong><span>作者确认后导出 Word / PDF 版本。</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="compliance" class="section">
+      <div class="container compliance">
+        <div>
+          <h2>学术合规保障</h2>
+          <p>系统以 <b>GB/T 7713.1—2025</b> 作为论文格式规则底座（已替代 2006 版），并联动 GB/T 7714 引用格式进行校验。</p>
+          <ul>
+            <li>最终论文内容必须由作者确认。</li>
+            <li>所有关键结论都要有来源、可追溯、可复核。</li>
+            <li>系统保留“结论-证据”双向检查接口，方便答辩前审阅。</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>自动检查项</h3>
+          <p>✓ 必备章节完整性</p>
+          <p>✓ 图表题注格式</p>
+          <p>✓ 公式编号一致性</p>
+          <p>✓ 参考文献来源有效性</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="section alt">
+      <div class="container">
+        <h2>在线体验（前端原型）</h2>
+        <form id="demo-form" class="demo-form">
+          <label>论文题目<input id="topic" required placeholder="例如：轮腿机器人平衡控制研究" /></label>
+          <label>资料摘要<textarea id="materials" rows="5" placeholder="每行一条资料摘要"></textarea></label>
+          <div class="row">
+            <label>模型
+              <select id="model">
+                <option>fast-cheap</option>
+                <option>balanced</option>
+                <option>quality</option>
+              </select>
+            </label>
+            <label>预算（￥）<input id="budget" type="number" min="1" value="5" /></label>
+          </div>
+          <button class="btn primary" type="submit">生成草案</button>
+        </form>
+
+        <pre id="output" class="output">等待输入...</pre>
+      </div>
+    </section>
+
+    <footer class="footer">© 2026 论文智排助手 | 仅用于学术写作辅助，不替代作者责任</footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
